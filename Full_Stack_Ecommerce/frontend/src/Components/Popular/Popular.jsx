@@ -8,17 +8,17 @@ import { ShopContext } from '../../Context/ShopContext'
 
 const Popular = (props) => {
 
-  const {addToCart} = useContext(ShopContext);
+  const {addToCart, products} = useContext(ShopContext);
 
-  const products = [
-    {id:1, name: 'Batman: Wayne Industries', image: tshirt1, price: 20},
-    {id:2, name: 'Spider-Man: Spider-Verse', image: tshirt2, price: 25},
-    {id:3, name: 'Batman: Out of this World', image: tshirt3, price: 30}
-  ]
+  // const products = [
+  //   {avilable: true, category: 'men', description: 'Black & White Designed', id:2, name: 'Batman: Wayne Industries', image: tshirt1, new_price: 20},
+  //   {avilable: true, category: 'men', description: 'Black & White Designed', id:3, name: 'Spider-Man: Spider-Verse', image: tshirt2, new_price: 25},
+  //   {avilable: true, category: 'men', description: 'Black & White Designed', id:4, name: 'Batman: Out of this World', image: tshirt3, new_price: 30}
+  // ]
 
   const handleClick = (data) => {
     // console.log('data', data);
-    addToCart(data);
+    addToCart(data.id);
   }
 
   return (
@@ -52,14 +52,19 @@ const Popular = (props) => {
                 </div> */}
                 {
                   products.map((product, index) => {
-                    return (
-                      <div key={index} className="product-item">
-                        <img src={product.image} alt={`T-shirt Design ${index + 1}`} />
-                        <h3>{product.name}</h3>
-                        <p>Price: ${product.price}.00</p>
-                        <button className="add-to-cart" onClick={() => handleClick(product)}>Add to Cart</button>  
-                      </div>
-                    )
+                    // console.log(product);
+                    
+                    if(product?.isNew === 'false' || product?.isNew === false)
+                      return (
+                        <div key={index} className="product-item">
+                          <img src={product.image} alt={`T-shirt Design ${index + 1}`} />
+                          <h3>{product.name}</h3>
+                          <p>Price: ${product.price}.00</p>
+                          <button className="add-to-cart" onClick={() => handleClick(product)}>Add to Cart</button>  
+                        </div>
+                      )
+                    else
+                      return null;
                   })
                 }
             </div>

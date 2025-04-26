@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./AddProduct.css";
 import upload_area from "../Assets/upload_area.svg";
 import { backend_url } from "../../App";
+import { useEffect } from "react";
 
 const AddProduct = () => {
 
@@ -12,7 +13,8 @@ const AddProduct = () => {
     image: "",
     category: "women",
     new_price: "",
-    old_price: ""
+    old_price: "",
+    isNew: 'false'
   });
 
   const AddProduct = async () => {
@@ -87,6 +89,34 @@ const AddProduct = () => {
         </label>
         <input onChange={(e) => setImage(e.target.files[0])} type="file" name="image" id="file-input" accept="image/*" hidden />
       </div>
+      <div className="new">
+  <p>New Product</p>
+  <div>
+    <label>
+      <input
+        type="radio"
+        name="isNew"
+        value="true"
+        checked={productDetails.isNew === 'true'}
+        onChange={(e) => changeHandler(e) }
+      />
+      Yes
+    </label>
+  </div>
+  <div>
+    <label>
+      <input
+        type="radio"
+        name="isNew"
+        value="false"
+        checked={productDetails.isNew === 'false'}
+        onChange={(e) => changeHandler(e)}
+        // defaultChecked={!productDetails.isNew}
+      />
+      No
+    </label>
+  </div>
+</div>
       <button className="addproduct-btn" onClick={() => { AddProduct() }}>ADD</button>
     </div>
   );

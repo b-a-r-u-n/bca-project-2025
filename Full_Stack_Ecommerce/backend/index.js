@@ -6,6 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 const port = process.env.PORT || 4000;
+const { uploadOnCloudinary } = require("./utils/cloudinary.util");
 
 app.use(express.json());
 app.use(cors());
@@ -25,10 +26,25 @@ const storage = multer.diskStorage({
     }
 })
 const upload = multer({ storage: storage })
-app.post("/upload", upload.single('product'), (req, res) => {
+app.post("/upload", upload.single('product'), async (req, res) => {
+    console.log('req.file',req.file);
+    console.log('req.file?.path',req.file?.path);
+    
+    let imageLocalPath;
+    let imageUrl;
+    if(req.file){
+        imageLocalPath = req.file?.path;
+        
+        imageUrl = await uploadOnCloudinary(imageLocalPath);
+        if(!imageUrl)
+            console.log("Image Upload Failed");
+        console.log('image', imageUrl.url);
+         
+    }
+    
     res.json({
         success: 1,
-        image_url: `/images/${req.file.filename}`
+        image_url: imageUrl?.url
     })
 })
 
@@ -74,6 +90,7 @@ const Product = mongoose.model("Product", {
     old_price: { type: Number },
     date: { type: Date, default: Date.now },
     avilable: { type: Boolean, default: true },
+    isNew: { type: Boolean, default: false },
 });
 
 
@@ -215,6 +232,8 @@ app.post("/addproduct", async(req, res) => {
         let last_product = last_product_array[0];
         id = last_product.id + 1;
     } else { id = 1; }
+    
+    
     const product = new Product({
         id: id,
         name: req.body.name,
@@ -223,6 +242,7 @@ app.post("/addproduct", async(req, res) => {
         category: req.body.category,
         new_price: req.body.new_price,
         old_price: req.body.old_price,
+        isNew: req.body.isNew
     });
     await product.save();
     console.log("Saved");

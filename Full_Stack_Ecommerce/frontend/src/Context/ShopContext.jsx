@@ -15,13 +15,16 @@ const ShopContextProvider = (props) => {
     return cart;
   };
 
-  // const [cartItems, setCartItems] = useState(getDefaultCart());
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(getDefaultCart());
+  // const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     fetch(`${backend_url}/allproducts`)
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => {
+        // console.log(data);
+        setProducts(data)
+      })
 
     if (localStorage.getItem("auth-token")) {
       fetch(`${backend_url}/getcart`, {
@@ -65,15 +68,18 @@ const ShopContextProvider = (props) => {
   };
 
   const addToCart = (itemId) => {
-    console.log(itemId);
-    console.log(`cartItems: ${cartItems}`);
+    // console.log(itemId);
+    console.log(`cartItems before: ${cartItems[0]}`);
     if (!localStorage.getItem("auth-token")) {
       alert("Please Login");
       return;
     }
     
-    // setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    setCartItems([...cartItems, {id: itemId.id, quantity: 1, price: itemId.price, image: itemId.image}])
+    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+    console.log(`cartItems after: ${cartItems[0]}`);
+    console.log(products);
+    
+    // setCartItems([...cartItems, {id: itemId.id, quantity: 1, price: itemId.price, image: itemId.image}])
     // console.log(`cartItems: ${cartItems}`);
     
     
